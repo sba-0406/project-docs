@@ -1,0 +1,12 @@
+import boto3
+
+# Define SageMaker client
+sagemaker_client = boto3.client('sagemaker', region_name='us-east-1')
+
+# Example function for model deployment
+def deploy_model(model_name, endpoint_name):
+    response = sagemaker_client.create_endpoint(
+        EndpointName=endpoint_name,
+        EndpointConfigName=model_name
+    )
+    print("Model deployed at endpoint:", endpoint_name)
