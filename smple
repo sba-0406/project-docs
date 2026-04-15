@@ -1,0 +1,133 @@
+Here's a comprehensive report of all the information extracted from the **DemandIQ: XGBoost Demand Forecasting Tool** Claude artifact: [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+***
+
+## PROJECT REPORT: DemandIQ — XGBoost Demand Forecasting Tool
+
+### 1. Project Overview
+
+**Project Name:** DemandIQ — Precision Forecasting Engine [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**Tagline:** "Demand Forecasting Without Uncertainty" [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**Subtitle:** State-of-the-art XGBoost Ensemble · Deterministic Point Forecasts · Industrial Precision [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**URL:** `https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9` [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**Status Banner:** ENGINE READY · XGBoost v2.1 + Gradient Boosting Ensemble · SMAPE < 2.8% · Historical MAPE: 2.1% [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**Badge:** XGBOOST + ENSEMBLE · MAPE < 3% [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+***
+
+### 2. Algorithm Architecture
+
+The tool is built on a three-layer architecture: [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### A. Core Model
+- **Algorithm:** XGBoost (eXtreme Gradient Boosting)
+- **Claim:** Winner of most Kaggle forecasting competitions
+- **Performance:** Consistently outperforms ARIMA, Prophet, and LSTM models
+- **Library Version:** XGBoost v2.1 [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### B. Feature Engine
+The feature engineering layer includes:
+- **Lag features** — historical values at different time lags
+- **Rolling statistics** — computed over 7-day, 14-day, and 30-day windows
+- **Seasonal decomposition** — extracting seasonal patterns
+- **Trend extraction** — identifying long-term directional movement
+- **Fourier terms** — for modeling cyclicality/periodic patterns [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### C. Ensemble Layer
+A weighted blend of three models:
+- **XGBoost:** 60% weight
+- **Holt-Winters (Exponential Smoothing):** 20% weight
+- **Linear Trend:** 20% weight
+- **Purpose:** Reduces variance and boosts stability [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### D. Accuracy Metrics
+- **MAPE (Mean Absolute Percentage Error):** Consistently below 3% on retail/supply chain data
+- **SMAPE (Symmetric Mean Absolute Percentage Error):** Used as the loss function for symmetric error optimization
+- **Historical MAPE benchmark:** 2.1% [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+***
+
+### 3. User Interface Components
+
+#### Input Section — Historical Demand Data
+- **Field:** "Paste Historical Sales (comma-separated, most recent last)"
+- **Demo Data (pre-filled):** `120,135,142,128,155,167,173,180,192,185,198,210,205,220,215,230,225,240,250,260,255,270,280,290,285,300,310,320,315,330` [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### Configuration Parameters
+| Parameter | Input Type | Default Value | Min | Max |
+|-----------|-----------|---------------|-----|-----|
+| Forecast Horizon (periods) | Number | 12 | 1 | 52 |
+| Seasonality Period | Dropdown | Monthly (12) | — | — |
+| Learning Rate (η) | Number | 0.05 | ~0.01 | 0.3 |
+| Max Depth | Number | 6 | 3 | 12 |
+| N Estimators | Number | 500 | 100 | 2000 |
+| Ensemble Weight XGB | Number | 0.6 | 0.4 | 0.9 |
+| Lag Window (periods) | Number | 12 | 3 | 52 |
+| Trend Damping | Dropdown | Mild (0.95) | — | — |
+
+**Seasonality Period Options:**
+- Weekly (7)
+- Monthly (12) *(default)*
+- Quarterly (4)
+- Yearly/Weekly (52)
+- None (1) [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+**Trend Damping Options:**
+- None
+- Mild (0.95) *(default)*
+- Moderate (0.85)
+- Strong (0.70) [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+#### Action Buttons
+- **▶ RUN FORECAST** — executes the forecast with current settings
+- **LOAD DEMO DATA** — populates the input with sample historical data [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+
+***
+
+### 4. Technology Stack (Inferred)
+
+Based on the artifact structure and Claude artifact conventions: [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+- **Frontend:** Single-page web application (HTML/CSS/JavaScript)
+- **ML Library:** XGBoost (JavaScript/Python bindings, likely XGBoost.js or a bundled version)
+- **Rendering:** Client-side (runs entirely in the browser via `about:srcdoc` iframe)
+- **Platform:** Claude Artifacts (hosted on Anthropic's infrastructure)
+- **Architecture:** Pure client-side computation (no backend server required)
+
+***
+
+### 5. Key Features Summary
+
+1. **Interactive Demand Forecasting** — Paste historical sales data and get future predictions
+2. **Configurable Model Hyperparameters** — Tune learning rate, tree depth, and estimators
+3. **Ensemble Modeling** — Combines XGBoost, Holt-Winters, and Linear Trend
+4. **Multiple Seasonality Options** — Supports weekly, monthly, quarterly, and yearly patterns
+5. **Trend Damping Controls** — Adjustable trend decay for more conservative forecasts
+6. **Demo Data** — Built-in sample dataset for testing
+7. **Real-time Forecasting** — All computation happens in-browser for instant results
+
+***
+
+### 6. Use Cases
+
+- **Retail demand planning** — Forecasting product sales
+- **Supply chain optimization** — Inventory management
+- **Resource planning** — Workforce or capacity forecasting
+- **Business analytics** — Revenue and sales projections
+
+***
+
+### 7. Limitations & Notes
+
+- The artifact runs entirely client-side in a browser iframe using `about:srcdoc` [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+- The actual JavaScript source code is embedded in the iframe and not directly accessible through standard page extraction tools
+- The tool is labeled as "user-generated and unverified" content by Claude [claude](https://claude.ai/public/artifacts/2ed69e79-7c50-489f-849e-e18116356ae9)
+- Maximum forecast horizon is 52 periods (suggesting it's designed for up to ~1 year of forecasting with monthly granularity)
+
+***
+
+This report covers all extractable information from the public artifact page. The actual implementation code (JavaScript/HTML/CSS) is embedded within the iframe's `srcdoc` attribute and would require direct access to the artifact's source HTML to extract.
