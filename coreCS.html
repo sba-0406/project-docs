@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bisma — Interview Prep: Core CS Theory</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0;--surface:#ffffff;--surface2:#f0ede6;--border:#e2ddd4;
+  --text:#1a1814;--muted:#7a7060;--muted2:#a89d8c;
+  --accent:#c94f1e;--accent2:#e8783a;--green:#2d7a4f;--blue:#1e5fa0;--purple:#6b3fa0;
+  --yellow:#c49a0a;--tag-bg:#f0ede6;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.7;}
+
+/* SIDEBAR NAV */
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+.sidebar::-webkit-scrollbar{width:4px;} .sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.sb-logo{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid var(--border);}
+.sb-logo h1{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;line-height:1.2;}
+.sb-logo p{font-size:11px;color:var(--muted);margin-top:4px;}
+.sb-section{padding:0.75rem 0;}
+.sb-section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);padding:0 1.25rem .4rem;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:.45rem 1.25rem;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+.sb-item:hover{color:var(--text);background:var(--surface2);}
+.sb-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(201,79,30,.05);font-weight:500;}
+.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sb-progress{padding:1rem 1.25rem;border-top:1px solid var(--border);margin-top:auto;}
+.sb-prog-label{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.sb-prog-bar{height:4px;background:var(--surface2);border-radius:999px;overflow:hidden;}
+.sb-prog-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s;}
+.sb-prog-count{font-size:11px;color:var(--muted);margin-top:4px;text-align:right;}
+
+/* MAIN */
+.main{margin-left:260px;flex:1;padding:2.5rem 3rem 4rem;max-width:900px;}
+.page-header{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.page-header .subject-tag{display:inline-block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;padding:4px 12px;border-radius:999px;margin-bottom:.75rem;}
+.page-header h2{font-family:'Fraunces',serif;font-size:2rem;font-weight:900;line-height:1.15;margin-bottom:.5rem;}
+.page-header p{color:var(--muted);font-size:14px;line-height:1.7;}
+
+/* TOPIC CARD */
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:1.25rem;overflow:hidden;}
+.topic-head{padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s;}
+.topic-head:hover{background:var(--surface2);}
+.topic-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);min-width:28px;}
+.topic-title{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;flex:1;}
+.topic-tags{display:flex;gap:5px;}
+.ttag{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500;}
+.t-imp{background:#fef3c7;color:#92400e;}
+.t-freq{background:#fee2e2;color:#991b1b;}
+.t-must{background:#dcfce7;color:#166534;}
+.topic-chk{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;cursor:pointer;}
+.topic-card.done .topic-chk{background:var(--green);border-color:var(--green);color:#fff;}
+.topic-chevron{font-size:10px;color:var(--muted2);transition:transform .2s;margin-left:4px;}
+.topic-card.open .topic-chevron{transform:rotate(180deg);}
+.topic-body{display:none;padding:0 1.25rem 1.25rem;border-top:1px solid var(--border);}
+.topic-card.open .topic-body{display:block;}
+
+/* CONTENT INSIDE CARD */
+.def-box{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:.85rem 1rem;margin:1rem 0;}
+.def-box .def-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:600;margin-bottom:4px;}
+.def-box p{font-size:14px;line-height:1.7;}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin:1.25rem 0 .6rem;}
+.point-list{display:flex;flex-direction:column;gap:6px;}
+.point{display:flex;gap:10px;font-size:13px;line-height:1.6;}
+.point-bullet{color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px;}
+.interview-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:.85rem 1rem;margin:1rem 0;}
+.interview-box .ib-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);font-weight:700;margin-bottom:8px;}
+.iq{font-size:13px;color:var(--text);padding:.35rem 0;border-bottom:1px solid #e0f2fe;line-height:1.5;}
+.iq:last-child{border-bottom:none;padding-bottom:0;}
+.iq::before{content:"Q: ";color:var(--blue);font-weight:600;}
+.say-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.85rem 1rem;margin:1rem 0;}
+.say-box .say-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--green);font-weight:700;margin-bottom:6px;}
+.say-box p{font-size:13px;color:#14532d;line-height:1.6;font-style:italic;}
+.code-block{background:#1a1814;border-radius:10px;padding:1rem;margin:.75rem 0;overflow-x:auto;}
+.code-block code{font-family:'DM Mono',monospace;font-size:12px;color:#e5e0d5;line-height:1.7;}
+.key-points{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:.85rem 1rem;margin:1rem 0;}
+.key-points .kp-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--purple);font-weight:700;margin-bottom:8px;}
+.kp{font-size:13px;padding:.25rem 0;display:flex;gap:8px;}
+.kp::before{content:"→";color:var(--purple);font-weight:700;flex-shrink:0;}
+.compare-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:12px;}
+.compare-table th{background:var(--surface2);padding:.5rem .75rem;text-align:left;font-weight:600;font-size:11px;border:1px solid var(--border);}
+.compare-table td{padding:.5rem .75rem;border:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.compare-table tr:nth-child(even) td{background:var(--surface2);}
+
+/* PAGES */
+.content-page{display:none;}
+.content-page.active{display:block;}
+
+/* MOBILE */
+.mob-nav-btn{display:none;position:fixed;bottom:1.5rem;right:1.5rem;background:var(--accent);color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:20px;cursor:pointer;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,.2);}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:1.5rem 1rem 5rem;}
+  .mob-nav-btn{display:flex;align-items:center;justify-content:center;}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <h1>Interview Prep<br>Core CS Theory</h1>
+    <p>Bisma · 2026 · Mohan Babu University</p>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Operating Systems</div>
+    <div class="sb-item active" onclick="showPage('os','os1',this)"><div class="sb-dot" style="background:#c94f1e"></div>Processes & Threads</div>
+    <div class="sb-item" onclick="showPage('os','os2',this)"><div class="sb-dot" style="background:#c94f1e"></div>CPU Scheduling</div>
+    <div class="sb-item" onclick="showPage('os','os3',this)"><div class="sb-dot" style="background:#c94f1e"></div>Memory Management</div>
+    <div class="sb-item" onclick="showPage('os','os4',this)"><div class="sb-dot" style="background:#c94f1e"></div>Deadlocks</div>
+    <div class="sb-item" onclick="showPage('os','os5',this)"><div class="sb-dot" style="background:#c94f1e"></div>Synchronisation</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">DBMS</div>
+    <div class="sb-item" onclick="showPage('dbms','db1',this)"><div class="sb-dot" style="background:#1e5fa0"></div>ACID & Transactions</div>
+    <div class="sb-item" onclick="showPage('dbms','db2',this)"><div class="sb-dot" style="background:#1e5fa0"></div>Normalisation</div>
+    <div class="sb-item" onclick="showPage('dbms','db3',this)"><div class="sb-dot" style="background:#1e5fa0"></div>Indexing</div>
+    <div class="sb-item" onclick="showPage('dbms','db4',this)"><div class="sb-dot" style="background:#1e5fa0"></div>Joins & SQL</div>
+    <div class="sb-item" onclick="showPage('dbms','db5',this)"><div class="sb-dot" style="background:#1e5fa0"></div>NoSQL vs SQL</div>
+    <div class="sb-item" onclick="showPage('dbms','db6',this)"><div class="sb-dot" style="background:#1e5fa0"></div>CAP Theorem</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Computer Networks</div>
+    <div class="sb-item" onclick="showPage('cn','cn1',this)"><div class="sb-dot" style="background:#2d7a4f"></div>OSI & TCP/IP Model</div>
+    <div class="sb-item" onclick="showPage('cn','cn2',this)"><div class="sb-dot" style="background:#2d7a4f"></div>HTTP & HTTPS</div>
+    <div class="sb-item" onclick="showPage('cn','cn3',this)"><div class="sb-dot" style="background:#2d7a4f"></div>TCP vs UDP</div>
+    <div class="sb-item" onclick="showPage('cn','cn4',this)"><div class="sb-dot" style="background:#2d7a4f"></div>DNS & How Web Works</div>
+    <div class="sb-item" onclick="showPage('cn','cn5',this)"><div class="sb-dot" style="background:#2d7a4f"></div>Sockets & Ports</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">OOP Concepts</div>
+    <div class="sb-item" onclick="showPage('oop','oop1',this)"><div class="sb-dot" style="background:#6b3fa0"></div>4 Pillars of OOP</div>
+    <div class="sb-item" onclick="showPage('oop','oop2',this)"><div class="sb-dot" style="background:#6b3fa0"></div>SOLID Principles</div>
+    <div class="sb-item" onclick="showPage('oop','oop3',this)"><div class="sb-dot" style="background:#6b3fa0"></div>Design Patterns</div>
+    <div class="sb-item" onclick="showPage('oop','oop4',this)"><div class="sb-dot" style="background:#6b3fa0"></div>Abstract vs Interface</div>
+  </div>
+
+  <div class="sb-progress">
+    <div class="sb-prog-label">Topics completed</div>
+    <div class="sb-prog-bar"><div class="sb-prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="sb-prog-count" id="progCount">0 / 20</div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ===== OS: PROCESSES & THREADS ===== -->
+<div class="content-page active" id="page-os1">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#fee2e2;color:#991b1b">Operating Systems</span>
+    <h2>Processes & Threads</h2>
+    <p>One of the most asked OS topics in backend interviews. Understand the difference cold — interviewers ask this even at mid-tier companies.</p>
+  </div>
+
+  <div class="topic-card" id="tc-os1-1">
+    <div class="topic-head" onclick="toggleTopic('os1-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">What is a Process?</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('os1-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>A process is a program in execution. When you run a program, the OS creates a process for it — it gets its own memory space (code, data, heap, stack), a process ID, and system resources.</p></div>
+      <div class="section-title">Key Properties</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Each process has its own separate memory space — one process cannot directly access another's memory</div>
+        <div class="point"><span class="point-bullet">→</span>Process creation is heavy — the OS must allocate new memory and resources (fork() is expensive)</div>
+        <div class="point"><span class="point-bullet">→</span>Processes communicate via IPC: pipes, sockets, shared memory, message queues</div>
+        <div class="point"><span class="point-bullet">→</span>A process can have multiple threads inside it</div>
+      </div>
+      <div class="section-title">Process States</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>New</strong> — process is being created</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Ready</strong> — waiting to be assigned to CPU</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Running</strong> — currently being executed by CPU</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Waiting/Blocked</strong> — waiting for I/O or event</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Terminated</strong> — finished execution</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"A process is an instance of a running program. The OS isolates each process with its own memory space — code segment, data segment, heap, and stack. This isolation is why if one process crashes, others aren't affected."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between a program and a process?</div>
+        <div class="iq">What happens when you fork a process?</div>
+        <div class="iq">How do processes communicate with each other?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="tc-os1-2">
+    <div class="topic-head" onclick="toggleTopic('os1-2')">
+      <span class="topic-num">02</span>
+      <span class="topic-title">What is a Thread?</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('os1-2',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>A thread is the smallest unit of execution within a process. Multiple threads within the same process share code, data, and heap — but each thread has its own stack and registers.</p></div>
+      <div class="section-title">Key Properties</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Threads are lightweight — creating a thread is faster than creating a process</div>
+        <div class="point"><span class="point-bullet">→</span>Threads within the same process share memory — so they can communicate directly (but need synchronisation)</div>
+        <div class="point"><span class="point-bullet">→</span>If one thread crashes badly (segfault), it can bring down the entire process</div>
+        <div class="point"><span class="point-bullet">→</span>Java uses threads heavily — every Java program has at least the main thread</div>
+      </div>
+      <div class="section-title">Process vs Thread — The Table You Must Know</div>
+      <table class="compare-table">
+        <tr><th>Aspect</th><th>Process</th><th>Thread</th></tr>
+        <tr><td>Memory</td><td>Separate memory space</td><td>Shared memory (within process)</td></tr>
+        <tr><td>Creation cost</td><td>Heavy (slow)</td><td>Lightweight (fast)</td></tr>
+        <tr><td>Communication</td><td>IPC (pipes, sockets)</td><td>Shared variables (need locks)</td></tr>
+        <tr><td>Isolation</td><td>Crash doesn't affect others</td><td>Crash can kill entire process</td></tr>
+        <tr><td>Context switch</td><td>Expensive</td><td>Cheaper</td></tr>
+        <tr><td>Example</td><td>Chrome browser itself</td><td>Each Chrome tab's JS engine</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"A thread is a lightweight unit of execution inside a process. Threads share the same memory space, which makes communication easy but requires careful synchronisation to avoid race conditions. Node.js is single-threaded for JS execution but uses worker threads via libuv for I/O."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Why is Node.js called single-threaded if it handles concurrent requests?</div>
+        <div class="iq">What is a race condition?</div>
+        <div class="iq">When would you use multi-threading vs multi-processing?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="tc-os1-3">
+    <div class="topic-head" onclick="toggleTopic('os1-3')">
+      <span class="topic-num">03</span>
+      <span class="topic-title">Context Switching</span>
+      <div class="topic-tags"><span class="ttag t-imp">Important</span></div>
+      <div class="topic-chk" onclick="markDone('os1-3',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>Context switching is when the CPU stops executing one process/thread and starts executing another. The OS saves the current state (registers, program counter, stack pointer) of the running process into its PCB, then loads the saved state of the next process.</p></div>
+      <div class="section-title">Why it matters</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Context switching has overhead — saving and restoring state takes time</div>
+        <div class="point"><span class="point-bullet">→</span>Too many context switches = "thrashing" — CPU spends more time switching than doing work</div>
+        <div class="point"><span class="point-bullet">→</span>This is why Node.js's event loop is efficient — avoids context switching by using async I/O on a single thread</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Context switching is the OS's way of giving each process a turn on the CPU. The current state is saved in the PCB (Process Control Block) and the next process's state is restored. It has overhead, which is one reason event-driven architectures like Node.js are efficient — they avoid the cost of switching between threads."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is a PCB (Process Control Block)?</div>
+        <div class="iq">How does the OS decide which process to run next?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OS: CPU SCHEDULING ===== -->
+<div class="content-page" id="page-os2">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#fee2e2;color:#991b1b">Operating Systems</span>
+    <h2>CPU Scheduling</h2>
+    <p>Know the algorithms and their tradeoffs. Common in OS theory rounds at mid-tier companies.</p>
+  </div>
+
+  <div class="topic-card" id="tc-os2-1">
+    <div class="topic-head" onclick="toggleTopic('os2-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Scheduling Algorithms</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('os2-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">What is CPU Scheduling?</div><p>The OS decides which process/thread gets CPU time and for how long. The goal is to maximise CPU utilisation, throughput, and minimise waiting time and response time.</p></div>
+      <div class="section-title">Key Algorithms</div>
+      <table class="compare-table">
+        <tr><th>Algorithm</th><th>How it works</th><th>Problem</th></tr>
+        <tr><td><strong>FCFS</strong></td><td>First come, first served — simple queue</td><td>Convoy effect — short jobs wait behind long ones</td></tr>
+        <tr><td><strong>SJF</strong></td><td>Shortest job runs first</td><td>Starvation — long jobs may never run</td></tr>
+        <tr><td><strong>Round Robin</strong></td><td>Each process gets a fixed time slice (quantum), then goes back to queue</td><td>If quantum too small = too many context switches</td></tr>
+        <tr><td><strong>Priority</strong></td><td>Higher priority process runs first</td><td>Starvation of low-priority processes</td></tr>
+        <tr><td><strong>MLFQ</strong></td><td>Multiple queues with different priorities. Process demoted if it uses too much CPU</td><td>Complex to implement</td></tr>
+      </table>
+      <div class="section-title">Key Terms</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>Burst time</strong> — time needed by process on CPU</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Waiting time</strong> — time spent in ready queue</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Turnaround time</strong> — total time from submission to completion</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Preemptive</strong> — OS can yank CPU from a running process (Round Robin)</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Non-preemptive</strong> — process runs until it finishes or blocks (FCFS)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Round Robin is the most practical scheduling algorithm — each process gets equal CPU time in turns. It's preemptive and fair, but if the time quantum is too small, context switching overhead dominates. Modern OSes use MLFQ — processes start with high priority but get demoted if they're CPU-intensive."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between preemptive and non-preemptive scheduling?</div>
+        <div class="iq">What is starvation and how do you prevent it?</div>
+        <div class="iq">Which scheduling algorithm does Linux use?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OS: MEMORY MANAGEMENT ===== -->
+<div class="content-page" id="page-os3">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#fee2e2;color:#991b1b">Operating Systems</span>
+    <h2>Memory Management</h2>
+    <p>Paging, virtual memory, and memory allocation. Backend engineers get asked this to test OS fundamentals.</p>
+  </div>
+
+  <div class="topic-card" id="tc-os3-1">
+    <div class="topic-head" onclick="toggleTopic('os3-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Paging & Virtual Memory</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('os3-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Virtual Memory</div><p>Virtual memory gives each process the illusion of having its own large, contiguous memory space — even if physical RAM is limited. The OS uses disk as an extension of RAM (swap space).</p></div>
+      <div class="section-title">Paging</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Physical memory is divided into fixed-size blocks called <strong>frames</strong></div>
+        <div class="point"><span class="point-bullet">→</span>Process memory is divided into same-size blocks called <strong>pages</strong></div>
+        <div class="point"><span class="point-bullet">→</span>Page Table maps virtual page numbers to physical frame numbers</div>
+        <div class="point"><span class="point-bullet">→</span>No external fragmentation (pages fit perfectly into frames)</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Page fault</strong> — when a page isn't in RAM, OS fetches it from disk (slow!)</div>
+      </div>
+      <div class="section-title">Stack vs Heap (Memory Layout)</div>
+      <table class="compare-table">
+        <tr><th>Stack</th><th>Heap</th></tr>
+        <tr><td>Fixed size, managed automatically</td><td>Dynamic size, manually managed (or GC)</td></tr>
+        <tr><td>Stores local variables, function calls</td><td>Stores objects, dynamically allocated memory</td></tr>
+        <tr><td>LIFO order</td><td>No specific order</td></tr>
+        <tr><td>Fast access</td><td>Slower (allocation overhead)</td></tr>
+        <tr><td>Stack overflow if too deep recursion</td><td>Memory leak if not freed</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Virtual memory abstracts physical RAM — each process sees a large virtual address space. The OS uses paging to map virtual pages to physical frames. When a page isn't in RAM, a page fault occurs and the OS fetches it from swap — which is why excessive swapping (thrashing) kills performance."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is a page fault?</div>
+        <div class="iq">What is the difference between stack and heap memory?</div>
+        <div class="iq">What causes a stack overflow?</div>
+        <div class="iq">What is memory fragmentation?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OS: DEADLOCKS ===== -->
+<div class="content-page" id="page-os4">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#fee2e2;color:#991b1b">Operating Systems</span>
+    <h2>Deadlocks</h2>
+    <p>Very commonly asked. Know the 4 conditions and how to prevent/detect deadlocks.</p>
+  </div>
+
+  <div class="topic-card" id="tc-os4-1">
+    <div class="topic-head" onclick="toggleTopic('os4-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">What is a Deadlock?</span>
+      <div class="topic-tags"><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('os4-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>A deadlock is a situation where two or more processes are stuck waiting for each other to release resources — and none of them ever will. Everyone is waiting, nothing moves.</p></div>
+      <div class="section-title">The 4 Coffman Conditions (ALL must be true for deadlock)</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">1</span><strong>Mutual Exclusion</strong> — only one process can use a resource at a time</div>
+        <div class="point"><span class="point-bullet">2</span><strong>Hold and Wait</strong> — a process holds one resource while waiting for another</div>
+        <div class="point"><span class="point-bullet">3</span><strong>No Preemption</strong> — resources cannot be forcibly taken from a process</div>
+        <div class="point"><span class="point-bullet">4</span><strong>Circular Wait</strong> — P1 waits for P2, P2 waits for P3, P3 waits for P1</div>
+      </div>
+      <div class="section-title">Prevention vs Avoidance vs Detection</div>
+      <table class="compare-table">
+        <tr><th>Approach</th><th>How</th></tr>
+        <tr><td><strong>Prevention</strong></td><td>Eliminate one of the 4 conditions (e.g., force processes to request all resources at once → breaks Hold and Wait)</td></tr>
+        <tr><td><strong>Avoidance</strong></td><td>Banker's Algorithm — only grant resource if system remains in "safe state"</td></tr>
+        <tr><td><strong>Detection</strong></td><td>Allow deadlock, detect using Resource Allocation Graph, then recover (kill a process)</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"A deadlock requires all 4 Coffman conditions simultaneously. In practice, you prevent deadlocks by imposing a global ordering on resource acquisition — for example, always lock mutex A before mutex B. This breaks circular wait. In databases, deadlock detection + transaction rollback is the standard approach."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What are the 4 necessary conditions for a deadlock?</div>
+        <div class="iq">How does the Banker's Algorithm work?</div>
+        <div class="iq">How do databases handle deadlocks?</div>
+        <div class="iq">What is livelock? How is it different from deadlock?</div>
+      </div>
+      <div class="key-points"><div class="kp-label">Quick Memory Aid</div>
+        <div class="kp">Livelock = processes keep responding to each other but make no progress (like two people in a corridor both stepping aside in the same direction)</div>
+        <div class="kp">Starvation = a process waits indefinitely because others keep getting priority</div>
+        <div class="kp">Deadlock = everyone is stuck waiting, nothing happens</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OS: SYNCHRONISATION ===== -->
+<div class="content-page" id="page-os5">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#fee2e2;color:#991b1b">Operating Systems</span>
+    <h2>Synchronisation</h2>
+    <p>Mutex, semaphore, monitors — these come up when discussing concurrent programming in Node.js or Java interviews.</p>
+  </div>
+
+  <div class="topic-card" id="tc-os5-1">
+    <div class="topic-head" onclick="toggleTopic('os5-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Mutex vs Semaphore vs Monitor</span>
+      <div class="topic-tags"><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('os5-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">The Core Problem</div><p>When multiple threads access shared resources simultaneously, you get race conditions — unpredictable results because the outcome depends on the order of execution. Synchronisation tools prevent this.</p></div>
+      <table class="compare-table">
+        <tr><th>Tool</th><th>What it does</th><th>Key difference</th></tr>
+        <tr><td><strong>Mutex</strong></td><td>Binary lock — only one thread can hold it at a time. The same thread that locks it must unlock it.</td><td>Ownership — only the locking thread can unlock</td></tr>
+        <tr><td><strong>Semaphore</strong></td><td>Counter-based — allows N threads to access a resource simultaneously. Can be signalled by a different thread.</td><td>No ownership concept</td></tr>
+        <tr><td><strong>Monitor</strong></td><td>High-level construct combining a mutex + condition variables. Java's synchronized keyword creates a monitor.</td><td>Built-in in Java</td></tr>
+        <tr><td><strong>Spinlock</strong></td><td>Thread actively polls ("spins") waiting for lock. Fast for very short waits, wastes CPU otherwise.</td><td>Busy-waiting</td></tr>
+      </table>
+      <div class="section-title">Critical Section Problem</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>Critical Section</strong> — code that accesses shared resources, must be executed by only one thread at a time</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Mutual Exclusion</strong> — only one thread in critical section at a time</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Progress</strong> — if no thread is in critical section, one waiting thread should get in</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Bounded Waiting</strong> — a thread must eventually get to enter (no starvation)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"A mutex is for mutual exclusion — only the thread that acquired it can release it. A semaphore is more flexible — it's a counter, and any thread can signal it. In Java, the synchronized keyword implicitly uses a monitor, which combines a mutex with wait/notify for condition-based coordination."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between a mutex and a semaphore?</div>
+        <div class="iq">What is a race condition? Give a real example.</div>
+        <div class="iq">How does Java's synchronized keyword work?</div>
+        <div class="iq">What is a condition variable?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: ACID ===== -->
+<div class="content-page" id="page-db1">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>ACID & Transactions</h2>
+    <p>Every backend interview will touch this. You used PostgreSQL transactions — be ready to explain exactly what ACID means.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db1-1">
+    <div class="topic-head" onclick="toggleTopic('db1-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">ACID Properties</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('db1-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">What is a Transaction?</div><p>A transaction is a sequence of database operations that must be executed as a single logical unit. Either ALL operations succeed, or NONE of them do. Example: transferring money — deduct from A AND credit to B must both happen or neither should.</p></div>
+      <div class="section-title">ACID — Each Property Explained</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">A</span><strong>Atomicity</strong> — "All or nothing." If any part of the transaction fails, the entire transaction is rolled back. No partial updates. Uses ROLLBACK to undo changes.</div>
+        <div class="point"><span class="point-bullet">C</span><strong>Consistency</strong> — The database moves from one valid state to another. All integrity constraints (foreign keys, unique constraints) must hold before and after the transaction.</div>
+        <div class="point"><span class="point-bullet">I</span><strong>Isolation</strong> — Concurrent transactions should not interfere with each other. Each transaction should execute as if it's the only one running. Implemented via locks or MVCC.</div>
+        <div class="point"><span class="point-bullet">D</span><strong>Durability</strong> — Once a transaction is committed, it's permanent — even if the system crashes. Achieved via write-ahead logging (WAL) — changes are written to log before applying to database.</div>
+      </div>
+      <div class="section-title">Isolation Levels (PostgreSQL)</div>
+      <table class="compare-table">
+        <tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th></tr>
+        <tr><td>Read Uncommitted</td><td>✓ Possible</td><td>✓ Possible</td><td>✓ Possible</td></tr>
+        <tr><td>Read Committed (default PG)</td><td>✗ Prevented</td><td>✓ Possible</td><td>✓ Possible</td></tr>
+        <tr><td>Repeatable Read</td><td>✗</td><td>✗ Prevented</td><td>✓ Possible</td></tr>
+        <tr><td>Serializable</td><td>✗</td><td>✗</td><td>✗ Prevented</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"ACID ensures reliable transaction processing. Atomicity handles failure — if one query in a transaction fails, everything rolls back. Isolation prevents dirty reads between concurrent transactions — PostgreSQL uses MVCC (Multi-Version Concurrency Control) so readers don't block writers. Durability is achieved via WAL — PostgreSQL writes changes to a log before applying them."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Explain ACID properties with a real example.</div>
+        <div class="iq">What is a dirty read? Phantom read?</div>
+        <div class="iq">What is MVCC and how does PostgreSQL use it?</div>
+        <div class="iq">What is the difference between ROLLBACK and COMMIT?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: NORMALISATION ===== -->
+<div class="content-page" id="page-db2">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>Normalisation</h2>
+    <p>Know 1NF through 3NF and why we normalise. Denormalisation is also important for system design.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db2-1">
+    <div class="topic-head" onclick="toggleTopic('db2-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Normal Forms (1NF → 3NF)</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('db2-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Why Normalise?</div><p>To eliminate data redundancy and update anomalies. If the same data is stored in multiple places, updating it in one place but not others causes inconsistency.</p></div>
+      <div class="section-title">Normal Forms</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">1NF</span><strong>First Normal Form</strong> — Each column has atomic (indivisible) values. No repeating groups. Each row is unique (has a primary key). <em>Bad: storing "Math, Science" in one cell. Good: separate rows.</em></div>
+        <div class="point"><span class="point-bullet">2NF</span><strong>Second Normal Form</strong> — Must be in 1NF + No partial dependency. Every non-key column must depend on the WHOLE primary key (not part of it). Only applies to composite keys.</div>
+        <div class="point"><span class="point-bullet">3NF</span><strong>Third Normal Form</strong> — Must be in 2NF + No transitive dependency. Non-key columns must depend ONLY on the primary key — not on other non-key columns.</div>
+        <div class="point"><span class="point-bullet">BCNF</span><strong>Boyce-Codd NF</strong> — Stricter version of 3NF. For every functional dependency X → Y, X must be a superkey.</div>
+      </div>
+      <div class="section-title">Anomalies normalisation prevents</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>Insertion anomaly</strong> — can't insert data without other data being present</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Update anomaly</strong> — changing data in one row creates inconsistency in others</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Deletion anomaly</strong> — deleting a row unintentionally destroys other data</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Normalisation removes redundancy. 1NF means atomic values and unique rows. 2NF removes partial dependencies (each attribute depends on the full primary key). 3NF removes transitive dependencies (attributes depend only on the primary key). In practice, we often denormalise for read performance — adding redundant columns to avoid expensive joins."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between 2NF and 3NF?</div>
+        <div class="iq">When would you denormalise a database?</div>
+        <div class="iq">What is a functional dependency?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: INDEXING ===== -->
+<div class="content-page" id="page-db3">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>Indexing</h2>
+    <p>Critical for backend interviews. You used MongoDB and PostgreSQL — be ready to explain how indexes work in both.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db3-1">
+    <div class="topic-head" onclick="toggleTopic('db3-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">How Database Indexes Work</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('db3-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">What is an Index?</div><p>An index is a separate data structure that stores a sorted subset of a table's data, along with pointers to the actual rows. It allows the database to find rows without scanning the entire table — like a book's index vs reading every page.</p></div>
+      <div class="section-title">B-Tree Index (Default in PostgreSQL & MySQL)</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Data stored in a balanced tree — O(log n) search time</div>
+        <div class="point"><span class="point-bullet">→</span>Supports range queries: WHERE age BETWEEN 20 AND 30</div>
+        <div class="point"><span class="point-bullet">→</span>Supports ORDER BY efficiently</div>
+        <div class="point"><span class="point-bullet">→</span>Default index type in PostgreSQL</div>
+      </div>
+      <div class="section-title">Types of Indexes</div>
+      <table class="compare-table">
+        <tr><th>Type</th><th>When to use</th></tr>
+        <tr><td><strong>Primary Index</strong></td><td>Automatically created on primary key. Table is physically sorted by this.</td></tr>
+        <tr><td><strong>Secondary Index</strong></td><td>On non-primary columns. Email, username etc.</td></tr>
+        <tr><td><strong>Composite Index</strong></td><td>On multiple columns. WHERE city = 'HYD' AND age = 22. Order matters!</td></tr>
+        <tr><td><strong>Unique Index</strong></td><td>Enforces uniqueness on a column</td></tr>
+        <tr><td><strong>Full-text Index</strong></td><td>For text search queries</td></tr>
+        <tr><td><strong>Hash Index</strong></td><td>Exact match only. Faster than B-tree for equality checks, no range support</td></tr>
+      </table>
+      <div class="section-title">When NOT to index</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Columns with low cardinality (e.g., boolean, gender) — index won't help much</div>
+        <div class="point"><span class="point-bullet">→</span>Tables with very few rows — full scan may be faster</div>
+        <div class="point"><span class="point-bullet">→</span>Columns that are frequently updated — index must be updated too (overhead)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"An index is a B-tree data structure maintained alongside the table. When you query WHERE email = 'x@y.com', instead of a full table scan (O(n)), the database traverses the B-tree in O(log n). The tradeoff is write overhead — every INSERT/UPDATE/DELETE must also update the index. In MongoDB, indexes work the same way — I always index fields used in find() queries and the aggregation pipeline's $match stage."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between clustered and non-clustered index?</div>
+        <div class="iq">When would an index NOT be used by the query optimizer?</div>
+        <div class="iq">What is a covering index?</div>
+        <div class="iq">How do you check if a query is using an index in PostgreSQL? (EXPLAIN ANALYZE)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: JOINS & SQL ===== -->
+<div class="content-page" id="page-db4">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>Joins & SQL</h2>
+    <p>SQL is tested at almost every company. Know all joins, GROUP BY, HAVING, subqueries, and window functions.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db4-1">
+    <div class="topic-head" onclick="toggleTopic('db4-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">SQL Joins — All Types</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('db4-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="section-title">All Join Types</div>
+      <table class="compare-table">
+        <tr><th>Join</th><th>Returns</th></tr>
+        <tr><td><strong>INNER JOIN</strong></td><td>Only rows with matching values in BOTH tables</td></tr>
+        <tr><td><strong>LEFT JOIN</strong></td><td>All rows from left table + matching from right. NULL for non-matches on right.</td></tr>
+        <tr><td><strong>RIGHT JOIN</strong></td><td>All rows from right table + matching from left. NULL for non-matches on left.</td></tr>
+        <tr><td><strong>FULL OUTER JOIN</strong></td><td>All rows from both tables. NULL where no match.</td></tr>
+        <tr><td><strong>CROSS JOIN</strong></td><td>Cartesian product — every row of table A with every row of table B</td></tr>
+        <tr><td><strong>SELF JOIN</strong></td><td>Table joins with itself. Useful for hierarchical data (employee → manager)</td></tr>
+      </table>
+      <div class="section-title">Important SQL Concepts</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>WHERE vs HAVING</strong> — WHERE filters rows BEFORE grouping. HAVING filters groups AFTER GROUP BY.</div>
+        <div class="point"><span class="point-bullet">→</span><strong>GROUP BY</strong> — aggregate rows by a column. Must SELECT only grouped columns or aggregate functions.</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Subquery</strong> — a query inside another query. Can be in WHERE, FROM, or SELECT.</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Window Functions</strong> — ROW_NUMBER(), RANK(), LAG(), LEAD(). Operate on a window of rows without collapsing them like GROUP BY does.</div>
+      </div>
+      <div class="code-block"><code>-- Find employees earning more than dept average
+SELECT name, salary, dept
+FROM employees e
+WHERE salary > (
+  SELECT AVG(salary) FROM employees
+  WHERE dept = e.dept
+);
+
+-- Window function: rank employees by salary within each dept
+SELECT name, dept, salary,
+  RANK() OVER (PARTITION BY dept ORDER BY salary DESC) as rank
+FROM employees;</code></div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"INNER JOIN is the most common — gives only matching rows. LEFT JOIN is useful when you want all records from one table regardless of whether there's a match — for example, all users even those with no orders. Window functions are powerful for analytics — I used them in my Darwinbox leaderboard with MongoDB's aggregation pipeline, which is equivalent."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between WHERE and HAVING?</div>
+        <div class="iq">Write a query to find the second highest salary.</div>
+        <div class="iq">What is a self join? Give an example use case.</div>
+        <div class="iq">What is the difference between UNION and UNION ALL?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: NOSQL VS SQL ===== -->
+<div class="content-page" id="page-db5">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>NoSQL vs SQL</h2>
+    <p>You've used both MongoDB and PostgreSQL — this question WILL come. Be ready to justify your project choices.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db5-1">
+    <div class="topic-head" onclick="toggleTopic('db5-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">SQL vs NoSQL — When to Use Which</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('db5-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <table class="compare-table">
+        <tr><th>Aspect</th><th>SQL (PostgreSQL)</th><th>NoSQL (MongoDB)</th></tr>
+        <tr><td>Schema</td><td>Fixed schema — must define columns upfront</td><td>Flexible schema — documents can have different fields</td></tr>
+        <tr><td>ACID</td><td>Full ACID compliance</td><td>MongoDB supports ACID since v4.0 (with limitations)</td></tr>
+        <tr><td>Scaling</td><td>Vertical scaling (bigger server)</td><td>Horizontal scaling (add more servers / sharding)</td></tr>
+        <tr><td>Relationships</td><td>Foreign keys, JOINs — excellent for relational data</td><td>Embedding or referencing — JOINs via $lookup (slower)</td></tr>
+        <tr><td>Query Language</td><td>SQL — standardised, powerful</td><td>JSON-like query syntax</td></tr>
+        <tr><td>Best for</td><td>Financial data, complex relationships, reporting</td><td>Unstructured data, real-time apps, high write throughput</td></tr>
+      </table>
+      <div class="section-title">Your Project Justification</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>Darwinbox (MongoDB)</strong> — HR data is flexible, schema evolves often. Different companies have different hiring workflows. Document model fits naturally. High write throughput for candidate submissions.</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Moodify (PostgreSQL)</strong> — User preferences and song data have clear relational structure. ACID important for user auth. Complex queries for analytics.</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"I chose MongoDB for Darwinbox because HR workflows are schema-flexible — different companies have different job fields. MongoDB's document model maps naturally to nested job descriptions and candidate profiles. For Moodify, I chose PostgreSQL because user auth and song-mood mappings are relational, and I needed ACID guarantees for user data integrity."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">When would you choose MongoDB over PostgreSQL?</div>
+        <div class="iq">Does MongoDB support transactions?</div>
+        <div class="iq">What are the different types of NoSQL databases?</div>
+        <div class="iq">How does MongoDB handle relationships?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DBMS: CAP THEOREM ===== -->
+<div class="content-page" id="page-db6">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dbeafe;color:#1e40af">DBMS</span>
+    <h2>CAP Theorem</h2>
+    <p>System design staple. You'll be asked this when discussing distributed database choices.</p>
+  </div>
+
+  <div class="topic-card" id="tc-db6-1">
+    <div class="topic-head" onclick="toggleTopic('db6-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">CAP Theorem Explained</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('db6-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">CAP Theorem</div><p>In a distributed system, you can only guarantee 2 of these 3 properties at the same time: Consistency, Availability, and Partition Tolerance.</p></div>
+      <div class="section-title">The 3 Properties</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">C</span><strong>Consistency</strong> — Every read receives the most recent write or an error. All nodes see the same data at the same time.</div>
+        <div class="point"><span class="point-bullet">A</span><strong>Availability</strong> — Every request receives a response (not necessarily the latest data). System always stays online.</div>
+        <div class="point"><span class="point-bullet">P</span><strong>Partition Tolerance</strong> — System continues to operate even if network partitions occur (nodes can't talk to each other). In real distributed systems, P is always required.</div>
+      </div>
+      <div class="section-title">Since P is required, you choose: CP or AP</div>
+      <table class="compare-table">
+        <tr><th>Choice</th><th>Example</th><th>Tradeoff</th></tr>
+        <tr><td><strong>CP</strong> (Consistent + Partition Tolerant)</td><td>MongoDB (in default config), HBase, Zookeeper</td><td>May become unavailable during partition</td></tr>
+        <tr><td><strong>AP</strong> (Available + Partition Tolerant)</td><td>Cassandra, CouchDB, DynamoDB</td><td>May return stale data during partition</td></tr>
+        <tr><td><strong>CA</strong> (Consistent + Available)</td><td>Traditional RDBMS like PostgreSQL (single node)</td><td>Can't handle network partitions — only for single-node</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"CAP theorem says in a distributed system, you can't have all three — C, A, and P — simultaneously. Since network partitions are unavoidable in distributed systems, P is always chosen. So the real choice is between CP and AP. For a banking system, I'd choose CP — I'd rather return an error than return wrong balance data. For a social media feed, AP is fine — showing a slightly stale post is acceptable."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Explain CAP theorem with a real example.</div>
+        <div class="iq">Is MongoDB CP or AP?</div>
+        <div class="iq">What is eventual consistency?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CN: OSI MODEL ===== -->
+<div class="content-page" id="page-cn1">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dcfce7;color:#14532d">Computer Networks</span>
+    <h2>OSI & TCP/IP Model</h2>
+    <p>Know the 7 layers cold. Interviewers often ask where specific protocols sit.</p>
+  </div>
+
+  <div class="topic-card" id="tc-cn1-1">
+    <div class="topic-head" onclick="toggleTopic('cn1-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">OSI Model — All 7 Layers</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('cn1-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Mnemonic</div><p><strong>"Please Do Not Throw Sausage Pizza Away"</strong> — Physical, Data Link, Network, Transport, Session, Presentation, Application</p></div>
+      <table class="compare-table">
+        <tr><th>#</th><th>Layer</th><th>Function</th><th>Protocols</th></tr>
+        <tr><td>7</td><td><strong>Application</strong></td><td>User-facing services — what apps use</td><td>HTTP, HTTPS, FTP, SMTP, DNS</td></tr>
+        <tr><td>6</td><td><strong>Presentation</strong></td><td>Data format, encryption, compression</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+        <tr><td>5</td><td><strong>Session</strong></td><td>Manages sessions between apps</td><td>NetBIOS, RPC</td></tr>
+        <tr><td>4</td><td><strong>Transport</strong></td><td>End-to-end delivery, error recovery, flow control</td><td>TCP, UDP</td></tr>
+        <tr><td>3</td><td><strong>Network</strong></td><td>Logical addressing, routing between networks</td><td>IP, ICMP, routers</td></tr>
+        <tr><td>2</td><td><strong>Data Link</strong></td><td>Physical addressing (MAC), error detection within network</td><td>Ethernet, WiFi, switches</td></tr>
+        <tr><td>1</td><td><strong>Physical</strong></td><td>Actual bits over physical medium</td><td>Cables, hubs, radio waves</td></tr>
+      </table>
+      <div class="section-title">TCP/IP Model (Practical model used in the real Internet)</div>
+      <table class="compare-table">
+        <tr><th>TCP/IP Layer</th><th>Equivalent OSI Layers</th></tr>
+        <tr><td>Application</td><td>Application + Presentation + Session</td></tr>
+        <tr><td>Transport</td><td>Transport</td></tr>
+        <tr><td>Internet</td><td>Network</td></tr>
+        <tr><td>Network Access</td><td>Data Link + Physical</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"The OSI model is a conceptual framework — 7 layers each with a specific responsibility. In practice, the TCP/IP model with 4 layers is what the internet uses. When I make an HTTP request from my Node.js app, it goes Application → Transport (TCP) → Network (IP) → Physical and back up on the other side."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">At which layer does HTTP operate?</div>
+        <div class="iq">What is the difference between OSI and TCP/IP model?</div>
+        <div class="iq">At which layer do routers operate? Switches?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CN: HTTP/HTTPS ===== -->
+<div class="content-page" id="page-cn2">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dcfce7;color:#14532d">Computer Networks</span>
+    <h2>HTTP & HTTPS</h2>
+    <p>Critical for backend engineers. Know HTTP methods, status codes, headers, and how HTTPS works.</p>
+  </div>
+
+  <div class="topic-card" id="tc-cn2-1">
+    <div class="topic-head" onclick="toggleTopic('cn2-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">HTTP — Everything You Need</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('cn2-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">HTTP</div><p>HyperText Transfer Protocol — a stateless, application-layer protocol for transferring data between client and server. Every request-response pair is independent — no memory of previous requests (statelessness is why we need sessions/JWT).</p></div>
+      <div class="section-title">HTTP Methods & Their Properties</div>
+      <table class="compare-table">
+        <tr><th>Method</th><th>Purpose</th><th>Idempotent?</th><th>Safe?</th></tr>
+        <tr><td>GET</td><td>Retrieve data</td><td>✓ Yes</td><td>✓ Yes</td></tr>
+        <tr><td>POST</td><td>Create new resource</td><td>✗ No</td><td>✗ No</td></tr>
+        <tr><td>PUT</td><td>Replace entire resource</td><td>✓ Yes</td><td>✗ No</td></tr>
+        <tr><td>PATCH</td><td>Partially update resource</td><td>✗ No (generally)</td><td>✗ No</td></tr>
+        <tr><td>DELETE</td><td>Delete resource</td><td>✓ Yes</td><td>✗ No</td></tr>
+        <tr><td>HEAD</td><td>GET but headers only, no body</td><td>✓ Yes</td><td>✓ Yes</td></tr>
+        <tr><td>OPTIONS</td><td>Check what methods server allows (used in CORS preflight)</td><td>✓ Yes</td><td>✓ Yes</td></tr>
+      </table>
+      <div class="section-title">HTTP Status Codes — Must Know</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">2xx</span>Success: 200 OK, 201 Created, 204 No Content</div>
+        <div class="point"><span class="point-bullet">3xx</span>Redirection: 301 Moved Permanently, 302 Found (temp redirect)</div>
+        <div class="point"><span class="point-bullet">4xx</span>Client errors: 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests</div>
+        <div class="point"><span class="point-bullet">5xx</span>Server errors: 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable</div>
+      </div>
+      <div class="section-title">HTTPS — How it works</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">1</span>Client sends "ClientHello" with supported TLS versions and cipher suites</div>
+        <div class="point"><span class="point-bullet">2</span>Server responds with SSL certificate (contains public key) and chosen cipher</div>
+        <div class="point"><span class="point-bullet">3</span>Client verifies certificate with Certificate Authority (CA)</div>
+        <div class="point"><span class="point-bullet">4</span>Client generates a session key, encrypts it with server's public key, sends it</div>
+        <div class="point"><span class="point-bullet">5</span>Server decrypts with its private key — both have the session key now</div>
+        <div class="point"><span class="point-bullet">6</span>All further communication uses symmetric encryption with this session key (fast)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"HTTPS uses TLS — asymmetric encryption for key exchange (slow), then symmetric encryption for actual data (fast). This is why the TLS handshake adds latency only once. In my Moodify project, I configured CSP headers and Helmet.js to add security headers — HSTS forces HTTPS, X-Frame-Options prevents clickjacking."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between 401 and 403?</div>
+        <div class="iq">What is idempotency? Which HTTP methods are idempotent?</div>
+        <div class="iq">How does HTTPS work? What is TLS handshake?</div>
+        <div class="iq">What is CORS and how do you handle it in Node.js?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CN: TCP vs UDP ===== -->
+<div class="content-page" id="page-cn3">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dcfce7;color:#14532d">Computer Networks</span>
+    <h2>TCP vs UDP</h2>
+    <p>Know this cold. It comes up in system design when discussing real-time features, gaming, video streaming.</p>
+  </div>
+
+  <div class="topic-card" id="tc-cn3-1">
+    <div class="topic-head" onclick="toggleTopic('cn3-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">TCP vs UDP — Complete Comparison</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('cn3-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <table class="compare-table">
+        <tr><th>Aspect</th><th>TCP</th><th>UDP</th></tr>
+        <tr><td>Connection</td><td>Connection-oriented (3-way handshake)</td><td>Connectionless</td></tr>
+        <tr><td>Reliability</td><td>Guaranteed delivery, retransmission on loss</td><td>No guarantee, packets may be lost</td></tr>
+        <tr><td>Order</td><td>Data arrives in order</td><td>Out-of-order delivery possible</td></tr>
+        <tr><td>Speed</td><td>Slower (overhead for reliability)</td><td>Faster (no handshake, no ACK)</td></tr>
+        <tr><td>Flow Control</td><td>Yes (sliding window)</td><td>No</td></tr>
+        <tr><td>Use cases</td><td>HTTP/S, FTP, email, databases</td><td>Video streaming, gaming, DNS, VoIP</td></tr>
+        <tr><td>Header size</td><td>20–60 bytes</td><td>8 bytes</td></tr>
+      </table>
+      <div class="section-title">TCP 3-Way Handshake</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">1</span><strong>SYN</strong> — Client sends SYN (synchronize) to server</div>
+        <div class="point"><span class="point-bullet">2</span><strong>SYN-ACK</strong> — Server responds with SYN-ACK</div>
+        <div class="point"><span class="point-bullet">3</span><strong>ACK</strong> — Client sends ACK — connection established</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"TCP is reliable — the 3-way handshake establishes connection, every packet is acknowledged, and lost packets are retransmitted. This makes it perfect for HTTP APIs where data integrity matters. UDP is fire-and-forget — no handshake, no retransmission. It's used for video calls where losing a frame is better than delaying all frames waiting for retransmission."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Why would you use UDP for video streaming?</div>
+        <div class="iq">What is the TCP 3-way handshake?</div>
+        <div class="iq">What is TCP flow control?</div>
+        <div class="iq">Why is HTTP/3 built on UDP (QUIC)?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CN: DNS & HOW WEB WORKS ===== -->
+<div class="content-page" id="page-cn4">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dcfce7;color:#14532d">Computer Networks</span>
+    <h2>DNS & How the Web Works</h2>
+    <p>"What happens when you type google.com in a browser?" — Classic interview question. Know every step.</p>
+  </div>
+
+  <div class="topic-card" id="tc-cn4-1">
+    <div class="topic-head" onclick="toggleTopic('cn4-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">What happens when you type a URL in browser</span>
+      <div class="topic-tags"><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('cn4-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="section-title">The Complete Journey</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">1</span><strong>Browser cache check</strong> — Has this URL been visited? Use cached IP if available.</div>
+        <div class="point"><span class="point-bullet">2</span><strong>OS cache / hosts file check</strong> — Check local DNS cache and /etc/hosts</div>
+        <div class="point"><span class="point-bullet">3</span><strong>DNS Resolution</strong> — Ask ISP's DNS resolver → Root DNS → TLD DNS (.com) → Authoritative DNS for the domain. Returns IP address.</div>
+        <div class="point"><span class="point-bullet">4</span><strong>TCP Connection</strong> — 3-way handshake with server IP on port 80 (HTTP) or 443 (HTTPS)</div>
+        <div class="point"><span class="point-bullet">5</span><strong>TLS Handshake</strong> (if HTTPS) — Certificate verification, session key exchange</div>
+        <div class="point"><span class="point-bullet">6</span><strong>HTTP Request</strong> — Browser sends GET / HTTP/1.1 with headers</div>
+        <div class="point"><span class="point-bullet">7</span><strong>Server processes request</strong> — May query DB, run logic, etc.</div>
+        <div class="point"><span class="point-bullet">8</span><strong>HTTP Response</strong> — Server returns HTML, CSS, JS</div>
+        <div class="point"><span class="point-bullet">9</span><strong>Browser renders</strong> — Parse HTML → Build DOM → Load CSS → Execute JS → Render</div>
+      </div>
+      <div class="section-title">DNS Record Types</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">A</span>Maps domain to IPv4 address</div>
+        <div class="point"><span class="point-bullet">AAAA</span>Maps domain to IPv6 address</div>
+        <div class="point"><span class="point-bullet">CNAME</span>Alias — points to another domain name</div>
+        <div class="point"><span class="point-bullet">MX</span>Mail server for the domain</div>
+        <div class="point"><span class="point-bullet">TXT</span>Text records (used for SPF, domain verification)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"When you type a URL, first DNS resolves the domain to an IP address through a hierarchy: local cache → ISP resolver → root DNS → TLD → authoritative DNS. Then a TCP 3-way handshake establishes connection, TLS handshake if HTTPS, then the HTTP request is sent. I use this understanding in my Node.js apps — for example, understanding DNS TTL is important when you rotate server IPs."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is DNS? How does it work?</div>
+        <div class="iq">What is the difference between A record and CNAME?</div>
+        <div class="iq">What is DNS caching and TTL?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CN: SOCKETS ===== -->
+<div class="content-page" id="page-cn5">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#dcfce7;color:#14532d">Computer Networks</span>
+    <h2>Sockets & Ports</h2>
+    <p>Backend engineers must know what a socket is, how ports work, and what WebSockets are.</p>
+  </div>
+
+  <div class="topic-card" id="tc-cn5-1">
+    <div class="topic-head" onclick="toggleTopic('cn5-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Sockets, Ports, and WebSockets</span>
+      <div class="topic-tags"><span class="ttag t-imp">Important</span></div>
+      <div class="topic-chk" onclick="markDone('cn5-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Socket</div><p>A socket is an endpoint for communication — it's identified by an IP address + port number. A socket is the combination: (IP:port). Your Node.js server listens on a socket (e.g., 0.0.0.0:3000).</p></div>
+      <div class="section-title">Ports — Key Numbers to Know</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">80</span>HTTP</div>
+        <div class="point"><span class="point-bullet">443</span>HTTPS</div>
+        <div class="point"><span class="point-bullet">22</span>SSH</div>
+        <div class="point"><span class="point-bullet">5432</span>PostgreSQL</div>
+        <div class="point"><span class="point-bullet">27017</span>MongoDB</div>
+        <div class="point"><span class="point-bullet">6379</span>Redis</div>
+        <div class="point"><span class="point-bullet">3000</span>Common Node.js dev port</div>
+        <div class="point"><span class="point-bullet">0–1023</span>Well-known ports (system reserved)</div>
+        <div class="point"><span class="point-bullet">1024–65535</span>Registered and dynamic ports</div>
+      </div>
+      <div class="section-title">HTTP vs WebSocket</div>
+      <table class="compare-table">
+        <tr><th>HTTP</th><th>WebSocket</th></tr>
+        <tr><td>Request-response model — client initiates every time</td><td>Full-duplex — both sides can send at any time</td></tr>
+        <tr><td>New connection per request (HTTP/1.1 has keep-alive)</td><td>One persistent connection</td></tr>
+        <tr><td>Good for REST APIs, static pages</td><td>Good for real-time: chat, live notifications, gaming</td></tr>
+        <tr><td>Stateless</td><td>Stateful (connection stays open)</td></tr>
+      </table>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"A socket is an IP address + port — the endpoint. In my Node.js apps, the Express server listens on a socket. WebSockets upgrade an HTTP connection to a persistent bidirectional channel — used for real-time features. For my Darwinbox platform, HTTP polling was enough since we didn't need real-time updates, but for a chat feature I'd use WebSockets via Socket.io."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is a socket? How is it different from a port?</div>
+        <div class="iq">When would you use WebSockets instead of HTTP?</div>
+        <div class="iq">What is long polling?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OOP: 4 PILLARS ===== -->
+<div class="content-page" id="page-oop1">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#f3e8ff;color:#6b21a8">OOP Concepts</span>
+    <h2>4 Pillars of OOP</h2>
+    <p>Asked in every single technical interview. Know each pillar with a real code example.</p>
+  </div>
+
+  <div class="topic-card" id="tc-oop1-1">
+    <div class="topic-head" onclick="toggleTopic('oop1-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Encapsulation</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('oop1-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>Bundling data (fields) and methods that operate on that data into a single unit (class), and restricting direct access to some components using access modifiers.</p></div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Private fields can only be accessed via public getters/setters</div>
+        <div class="point"><span class="point-bullet">→</span>Prevents external code from putting the object in an invalid state</div>
+        <div class="point"><span class="point-bullet">→</span>Information hiding — expose only what's necessary</div>
+      </div>
+      <div class="code-block"><code>// Java example
+public class BankAccount {
+    private double balance; // private — cannot be accessed directly
+
+    public double getBalance() { return balance; } // controlled access
+
+    public void deposit(double amount) {
+        if (amount > 0) balance += amount; // validation inside
+    }
+}
+// You can't do: account.balance = -1000; (compile error)</code></div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Encapsulation bundles data and behaviour and hides implementation details. The key benefit is data integrity — users of a class can't put it in an invalid state. In my Node.js code, I encapsulate business logic inside service classes — the controller doesn't know HOW a job is scored, just that it calls assessmentService.scoreCandidate()."</p></div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="tc-oop1-2">
+    <div class="topic-head" onclick="toggleTopic('oop1-2')">
+      <span class="topic-num">02</span>
+      <span class="topic-title">Inheritance</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('oop1-2',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>A child class inherits properties and methods from a parent class, enabling code reuse. The child can override parent methods and add new ones.</p></div>
+      <div class="code-block"><code>class Animal {
+    String name;
+    void speak() { System.out.println("..."); }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() { System.out.println("Woof!"); } // override
+    void fetch() { System.out.println("Fetching!"); } // new method
+}</code></div>
+      <div class="section-title">Types of Inheritance in Java</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span><strong>Single</strong> — A extends B</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Multilevel</strong> — A extends B extends C</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Hierarchical</strong> — B extends A, C extends A</div>
+        <div class="point"><span class="point-bullet">→</span><strong>Multiple</strong> — NOT supported in Java for classes (but supported via interfaces)</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Java doesn't support multiple class inheritance to avoid the diamond problem — where two parent classes have the same method and the child doesn't know which to use. Java solves this with interfaces, which support multiple inheritance."</p></div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="tc-oop1-3">
+    <div class="topic-head" onclick="toggleTopic('oop1-3')">
+      <span class="topic-num">03</span>
+      <span class="topic-title">Polymorphism</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span><span class="ttag t-freq">Frequently Asked</span></div>
+      <div class="topic-chk" onclick="markDone('oop1-3',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>"Many forms" — same method name behaves differently depending on the object type or arguments. Two types: compile-time (overloading) and runtime (overriding).</p></div>
+      <table class="compare-table">
+        <tr><th>Type</th><th>Also called</th><th>How</th><th>Resolved at</th></tr>
+        <tr><td><strong>Method Overloading</strong></td><td>Compile-time / Static polymorphism</td><td>Same method name, different parameters</td><td>Compile time</td></tr>
+        <tr><td><strong>Method Overriding</strong></td><td>Runtime / Dynamic polymorphism</td><td>Child class redefines parent's method</td><td>Runtime</td></tr>
+      </table>
+      <div class="code-block"><code>// Overloading (compile-time)
+int add(int a, int b) { return a + b; }
+double add(double a, double b) { return a + b; } // different params
+
+// Overriding (runtime)
+Animal a = new Dog(); // parent reference, child object
+a.speak(); // calls Dog's speak() — decided at runtime</code></div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Overloading is compile-time polymorphism — the compiler picks the right method based on parameters. Overriding is runtime polymorphism — the JVM picks the right method based on the actual object type, not the reference type. This is how Java achieves late binding."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What is the difference between overloading and overriding?</div>
+        <div class="iq">Can we override a static method in Java?</div>
+        <div class="iq">Can we override a private method in Java?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card" id="tc-oop1-4">
+    <div class="topic-head" onclick="toggleTopic('oop1-4')">
+      <span class="topic-num">04</span>
+      <span class="topic-title">Abstraction</span>
+      <div class="topic-tags"><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('oop1-4',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="def-box"><div class="def-label">Definition</div><p>Hiding implementation details and showing only the essential features. Users know WHAT something does, not HOW it does it.</p></div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Achieved via abstract classes and interfaces in Java</div>
+        <div class="point"><span class="point-bullet">→</span>Abstract class: can have abstract methods (no body) AND concrete methods</div>
+        <div class="point"><span class="point-bullet">→</span>Interface: originally only abstract methods — since Java 8, can have default and static methods</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Abstraction hides complexity. When I call assessmentService.generateQuestions(jobDescription), I don't care that it invokes LLaMA, applies the generator-critic pipeline, and validates output — I just get questions back. That's abstraction in practice — the service layer abstracts the AI complexity from the controller."</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OOP: SOLID ===== -->
+<div class="content-page" id="page-oop2">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#f3e8ff;color:#6b21a8">OOP Concepts</span>
+    <h2>SOLID Principles</h2>
+    <p>Senior engineers love asking SOLID. Knowing these shows you write production-quality code.</p>
+  </div>
+
+  <div class="topic-card" id="tc-oop2-1">
+    <div class="topic-head" onclick="toggleTopic('oop2-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">SOLID — All 5 Principles</span>
+      <div class="topic-tags"><span class="ttag t-imp">Important</span></div>
+      <div class="topic-chk" onclick="markDone('oop2-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">S</span><strong>Single Responsibility Principle</strong> — A class should have only ONE reason to change. One class = one job. <em>Bad: UserService handling login + sending emails + generating reports. Good: Separate AuthService, EmailService, ReportService.</em></div>
+        <div class="point"><span class="point-bullet">O</span><strong>Open/Closed Principle</strong> — Open for extension, closed for modification. Add new functionality by extending, not by modifying existing code. <em>Use inheritance or composition instead of editing the original class.</em></div>
+        <div class="point"><span class="point-bullet">L</span><strong>Liskov Substitution Principle</strong> — Objects of a subclass should be replaceable with objects of the parent class without breaking the program. <em>If Bird.fly() exists, Penguin extending Bird and crashing on fly() violates LSP.</em></div>
+        <div class="point"><span class="point-bullet">I</span><strong>Interface Segregation Principle</strong> — Don't force a class to implement interfaces it doesn't use. Split large interfaces into smaller, specific ones.</div>
+        <div class="point"><span class="point-bullet">D</span><strong>Dependency Inversion Principle</strong> — High-level modules should not depend on low-level modules. Both should depend on abstractions (interfaces). <em>Your controller depends on IUserService interface, not on a specific UserService implementation — so you can swap it.</em></div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"In my Darwinbox project I applied SRP — separate controllers, services, and models. The ResilientAIService demonstrates OCP — I added new model fallbacks without modifying the core service logic. DIP is why I pass services as dependencies rather than instantiating them inside controllers — it makes testing much easier."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Explain the Single Responsibility Principle with an example.</div>
+        <div class="iq">What is Dependency Injection? How does it relate to DIP?</div>
+        <div class="iq">Give an example that violates LSP.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OOP: DESIGN PATTERNS ===== -->
+<div class="content-page" id="page-oop3">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#f3e8ff;color:#6b21a8">OOP Concepts</span>
+    <h2>Design Patterns</h2>
+    <p>Know Singleton, Factory, Observer, Strategy — these 4 cover 80% of interview questions on patterns.</p>
+  </div>
+
+  <div class="topic-card" id="tc-oop3-1">
+    <div class="topic-head" onclick="toggleTopic('oop3-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Must-Know Design Patterns</span>
+      <div class="topic-tags"><span class="ttag t-imp">Important</span></div>
+      <div class="topic-chk" onclick="markDone('oop3-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <div class="section-title">Creational Patterns</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">Singleton</span>Only one instance of a class exists. Used for: DB connections, config managers, logger. <em>In Node.js, module caching effectively makes every require() a singleton.</em></div>
+        <div class="point"><span class="point-bullet">Factory</span>Creates objects without specifying exact class. Client calls factory method, factory decides which class to instantiate. Good for: creating different types of notifications (email, SMS, push).</div>
+        <div class="point"><span class="point-bullet">Builder</span>Construct complex objects step by step. Good for: building complex query objects, HTTP requests with many optional params.</div>
+      </div>
+      <div class="section-title">Structural Patterns</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">Adapter</span>Wraps an incompatible interface to make it compatible. Like a power adapter — same electricity, different plug.</div>
+        <div class="point"><span class="point-bullet">Proxy</span>A surrogate that controls access to another object. Used for: caching, access control, logging. <em>Your ResilientAIService is essentially a proxy to LLM APIs — it intercepts calls and handles failures.</em></div>
+      </div>
+      <div class="section-title">Behavioural Patterns</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">Observer</span>When one object changes state, all dependents are notified automatically. Used in: event systems, React state, Node.js EventEmitter.</div>
+        <div class="point"><span class="point-bullet">Strategy</span>Define a family of algorithms, put each in a separate class, make them interchangeable. Good for: sorting algorithms, payment methods, auth strategies (JWT vs OAuth).</div>
+        <div class="point"><span class="point-bullet">Chain of Responsibility</span>Pass request along a chain of handlers. Express middleware IS this pattern — each middleware either handles the request or passes it to next().</div>
+      </div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Express middleware is the Chain of Responsibility pattern — each middleware function either handles the request or calls next() to pass it along. My ResilientAIService is a Proxy — it wraps the LLM API and intercepts calls to add retry logic, model rotation, and fallback. Node.js's EventEmitter implements the Observer pattern."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">What design pattern does Express middleware use?</div>
+        <div class="iq">How would you implement a Singleton in JavaScript?</div>
+        <div class="iq">What is the difference between Observer and Pub/Sub?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OOP: ABSTRACT VS INTERFACE ===== -->
+<div class="content-page" id="page-oop4">
+  <div class="page-header">
+    <span class="subject-tag" style="background:#f3e8ff;color:#6b21a8">OOP Concepts</span>
+    <h2>Abstract Class vs Interface</h2>
+    <p>One of the most asked Java OOP questions. Know the exact differences and when to use each.</p>
+  </div>
+
+  <div class="topic-card" id="tc-oop4-1">
+    <div class="topic-head" onclick="toggleTopic('oop4-1')">
+      <span class="topic-num">01</span>
+      <span class="topic-title">Abstract Class vs Interface — Complete Guide</span>
+      <div class="topic-tags"><span class="ttag t-freq">Frequently Asked</span><span class="ttag t-must">Must Know</span></div>
+      <div class="topic-chk" onclick="markDone('oop4-1',event)">✓</div>
+      <span class="topic-chevron">▼</span>
+    </div>
+    <div class="topic-body">
+      <table class="compare-table">
+        <tr><th>Aspect</th><th>Abstract Class</th><th>Interface</th></tr>
+        <tr><td>Methods</td><td>Can have abstract AND concrete (implemented) methods</td><td>All abstract by default; default/static methods since Java 8</td></tr>
+        <tr><td>Variables</td><td>Any type (private, protected, public)</td><td>Only public static final (constants)</td></tr>
+        <tr><td>Constructor</td><td>Can have constructor</td><td>Cannot have constructor</td></tr>
+        <tr><td>Inheritance</td><td>extends — single class only</td><td>implements — multiple interfaces allowed</td></tr>
+        <tr><td>Use when</td><td>Classes share code AND have a common identity (IS-A)</td><td>Unrelated classes share behaviour (CAN-DO)</td></tr>
+        <tr><td>Example</td><td>Animal (abstract) → Dog, Cat share eat() implementation</td><td>Flyable → Bird, Airplane, Superman can all fly differently</td></tr>
+      </table>
+      <div class="section-title">The Golden Rule</div>
+      <div class="point-list">
+        <div class="point"><span class="point-bullet">→</span>Use <strong>abstract class</strong> when classes have a common parent identity and share some implementation</div>
+        <div class="point"><span class="point-bullet">→</span>Use <strong>interface</strong> when you want to define a contract that unrelated classes can fulfil</div>
+        <div class="point"><span class="point-bullet">→</span>Java allows implementing multiple interfaces — use this for mixing capabilities (Serializable, Comparable, Runnable)</div>
+      </div>
+      <div class="code-block"><code>// Abstract class — IS-A relationship
+abstract class Shape {
+    String color;
+    abstract double area(); // must implement
+    void display() { System.out.println("Color: " + color); } // shared
+}
+
+// Interface — CAN-DO relationship
+interface Printable { void print(); }
+interface Saveable { void save(); }
+
+class Report extends Document implements Printable, Saveable {
+    // multiple interface implementation — allowed!
+}</code></div>
+      <div class="say-box"><div class="say-label">How to say it in an interview</div><p>"Abstract class is for IS-A with shared code — Dog IS-A Animal and shares the eat() implementation. Interface is for CAN-DO — Bird and Airplane both CAN-DO fly, but they're completely unrelated classes. I prefer interfaces because they enable multiple inheritance and loose coupling — my Node.js services depend on interface-like contracts, not concrete implementations."</p></div>
+      <div class="interview-box"><div class="ib-label">Likely Interview Questions</div>
+        <div class="iq">Can an abstract class have a constructor?</div>
+        <div class="iq">Can we instantiate an abstract class directly?</div>
+        <div class="iq">What is a functional interface in Java?</div>
+        <div class="iq">What are default methods in interfaces (Java 8)?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<button class="mob-nav-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<script>
+// Load done state
+const done = {};
+try{Object.assign(done, JSON.parse(localStorage.getItem('prep_cs_done')||'{}'));}catch(e){}
+function save(){try{localStorage.setItem('prep_cs_done',JSON.stringify(done));}catch(e){}}
+
+function markDone(id, e){
+  e.stopPropagation();
+  done[id] = !done[id];
+  save();
+  const card = document.getElementById('tc-'+id);
+  card.classList.toggle('done', done[id]);
+  card.querySelector('.topic-chk').textContent = done[id] ? '✓' : '✓';
+  updateProgress();
+}
+
+function toggleTopic(id){
+  const card = document.getElementById('tc-'+id);
+  card.classList.toggle('open');
+}
+
+function showPage(subject, pageId, el){
+  document.querySelectorAll('.content-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+pageId).classList.add('active');
+  el.classList.add('active');
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function updateProgress(){
+  const cards = document.querySelectorAll('[id^="tc-"]');
+  const total = cards.length;
+  const doneCount = Object.values(done).filter(Boolean).length;
+  const pct = total ? Math.round(doneCount/total*100) : 0;
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('progCount').textContent = doneCount+' / '+total;
+}
+
+// Restore done state on load
+document.querySelectorAll('[id^="tc-"]').forEach(card=>{
+  const id = card.id.replace('tc-','');
+  if(done[id]){
+    card.classList.add('done');
+    const chk = card.querySelector('.topic-chk');
+    if(chk) chk.textContent = '✓';
+  }
+});
+updateProgress();
+</script>
+</body>
+</html>
